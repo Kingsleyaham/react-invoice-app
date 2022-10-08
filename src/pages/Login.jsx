@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const Box = styled.div``;
 
@@ -61,9 +62,85 @@ const Typography = styled.p`
 `;
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+
+  const password = useRef(null);
+  const email = useRef(null);
+
   useEffect(() => {
     document.title = "React Firebase Invoice App - Login";
   }, []);
+
+  useEffect(() => {
+    console.log(auth);
+  }, [auth]);
+
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!isValidForm(email.current, password.current)) return;
+
+    console.log(email.current.value, password.current.value);
+  };
+
+  const handleChange = (e) => {
+    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+
+    if (e.target.value === "") {
+      setErrors((prev) => ({
+        ...prev,
+        [e.target.name]: "required",
+      }));
+    }
+
+    if (e.target.name === "email" && !isValidEmail(e.target.value)) {
+      setErrors((prev) => ({ ...prev, [e.target.name]: "required" }));
+    }
+  };
+
+  const isValidForm = (email, password) => {
+    if (!email.value) {
+      setErrors((prev) => ({
+        ...prev,
+        email: "required",
+        password: "",
+      }));
+      return;
+    }
+
+    if (!isValidEmail(email.value)) {
+      setErrors((prev) => ({
+        ...prev,
+        email: "required",
+        password: "",
+      }));
+      return;
+    }
+
+    if (!password.value) {
+      setErrors((prev) => ({
+        ...prev,
+        email: "",
+        password: "required",
+      }));
+      return;
+    }
+
+    setErrors((prev) => ({ ...prev, email: "", password: "" }));
+
+    return true;
+  };
+
+  const isValidEmail = (email) => {
+    let regexp =
+      /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    return regexp.test(email);
+  };
 
   return (
     <Container className="login-page">
@@ -74,9 +151,23 @@ const Login = () => {
             <Typography>Please enter your credentials to login.</Typography>
           </div>
         </Wrapper>
-        <Form className="login-form">
-          <Input type="text" placeholder="Username" />
-          <Input type="password" placeholder="Password" />
+        <Form className="login-form" onSubmit={handleSubmit}>
+          <Input
+            type="text"
+            placeholder="email"
+            name="email"
+            ref={email}
+            className={errors.email && "errorborder"}
+            onChange={handleChange}
+          />
+          <Input
+            type="password"
+            placeholder="Password"
+            name="password"
+            ref={password}
+            className={errors.password && "errorborder"}
+            onChange={handleChange}
+          />
           <Button>login</Button>
           <Typography
             className="message"
