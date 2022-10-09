@@ -1,7 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+// firebase
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
+// react-toastify
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useAuth from "../custom hooks/useAuth";
 
 const Box = styled.div``;
 
@@ -54,6 +61,9 @@ const Button = styled.button`
   -webkit-transition: all 0.3 ease;
   transition: all 0.3 ease;
   cursor: pointer;
+  &:disabled {
+    cursor: not-allowed;
+  }
 `;
 
 const Typography = styled.p`
@@ -62,84 +72,52 @@ const Typography = styled.p`
 `;
 
 const Login = () => {
-  const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth);
-
-  const password = useRef(null);
-  const email = useRef(null);
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = "React Firebase Invoice App - Login";
+    if (currentUser) {
+      console.log(currentUser);
+      navigate("/");
+    } else {
+      navigate("/login");
+    }
   }, []);
 
-  useEffect(() => {
-    console.log(auth);
-  }, [auth]);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
 
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-  });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!isValidForm(email.current, password.current)) return;
-
-    console.log(email.current.value, password.current.value);
-  };
-
-  const handleChange = (e) => {
-    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
-
-    if (e.target.value === "") {
-      setErrors((prev) => ({
-        ...prev,
-        [e.target.name]: "required",
-      }));
-    }
-
-    if (e.target.name === "email" && !isValidEmail(e.target.value)) {
-      setErrors((prev) => ({ ...prev, [e.target.name]: "required" }));
+  const loginUser = async (data) => {
+    const { email, password } = data;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      toast.success("Successfully logged in");
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    } catch (error) {
+      handleError(error);
     }
   };
-
-  const isValidForm = (email, password) => {
-    if (!email.value) {
-      setErrors((prev) => ({
-        ...prev,
-        email: "required",
-        password: "",
-      }));
-      return;
+  const handleError = (error) => {
+    let message = "";
+    switch (error.code) {
+      case "auth/user-not-found":
+        message = `Invalid email or password.`;
+        break;
+      case "auth/wrong-password":
+        message = `Invalid email or password`;
+        break;
+      default:
+        message = "An Error Occured";
+        break;
     }
 
-    if (!isValidEmail(email.value)) {
-      setErrors((prev) => ({
-        ...prev,
-        email: "required",
-        password: "",
-      }));
-      return;
-    }
-
-    if (!password.value) {
-      setErrors((prev) => ({
-        ...prev,
-        email: "",
-        password: "required",
-      }));
-      return;
-    }
-
-    setErrors((prev) => ({ ...prev, email: "", password: "" }));
-
-    return true;
-  };
-
-  const isValidEmail = (email) => {
-    let regexp =
-      /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    return regexp.test(email);
+    toast.error(message);
   };
 
   return (
@@ -151,24 +129,28 @@ const Login = () => {
             <Typography>Please enter your credentials to login.</Typography>
           </div>
         </Wrapper>
-        <Form className="login-form" onSubmit={handleSubmit}>
+        <Form className="login-form" onSubmit={handleSubmit(loginUser)}>
           <Input
             type="text"
-            placeholder="email"
+            placeholder="Email"
             name="email"
-            ref={email}
             className={errors.email && "errorborder"}
-            onChange={handleChange}
+            {...register("email", {
+              required: true,
+              pattern:
+                /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+            })}
           />
           <Input
             type="password"
             placeholder="Password"
             name="password"
-            ref={password}
             className={errors.password && "errorborder"}
-            onChange={handleChange}
+            {...register("password", { required: true, minLength: 8 })}
           />
-          <Button>login</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            login
+          </Button>
           <Typography
             className="message"
             style={{ margin: "15px 0 0", color: "#b3b3b3", fontSize: "12px" }}
@@ -184,6 +166,7 @@ const Login = () => {
           </Typography>
         </Form>
       </FormWwrapper>
+      <ToastContainer />
     </Container>
   );
 };

@@ -206,9 +206,7 @@ const InvoiceForm = () => {
   const invoice = editMode.status
     ? invoices.filter((item) => item.id === editMode.id)[0]
     : null;
-  const invoiceIndex = invoices.findIndex(
-    (elem, index) => elem.id === invoice?.id
-  );
+  const invoiceIndex = invoices.findIndex((elem) => elem.id === invoice?.id);
   const [invoiceForm, setInvoiceForm] = useState({
     id: "",
     adress: "",

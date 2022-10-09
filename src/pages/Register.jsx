@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { CREATE_USER, SET_USER_DATA } from "../store/auth/userAuthSlice";
 
 // firebase
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -65,6 +63,10 @@ const Button = styled.button`
   -webkit-transition: all 0.3 ease;
   transition: all 0.3 ease;
   cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 `;
 
 const Typography = styled.p`
@@ -73,9 +75,7 @@ const Typography = styled.p`
 `;
 
 const Register = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userData = useSelector((state) => state.auth.userData);
 
   useEffect(() => {
     document.title = "React Firebase Invoice App - Signup";
@@ -84,10 +84,10 @@ const Register = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm();
 
-  const onSubmit = async (data) => {
+  const signupUser = async (data) => {
     const { email, username, password } = data;
     try {
       // create auth user
@@ -99,33 +99,19 @@ const Register = () => {
 
       // add user to user collection
       const uid = auth.currentUser.uid;
-      console.log(response);
-      try {
-        const docRef = await addDoc(collection(db, "users"), {
-          id: uid,
-          email: response.user.email,
-          username,
-        });
-        console.log(docRef);
 
-        // update store
-        dispatch(CREATE_USER({ user: auth.currentUser.toJSON() }));
-        const userData = {
-          ...auth.currentUser.toJSON(),
-          id: uid,
-          email: response.user.email,
-          username,
-        };
-        dispatch(SET_USER_DATA({ userData }));
-        toast.success("signup successful");
+      await addDoc(collection(db, "users"), {
+        id: uid,
+        email: response.user.email,
+        username,
+      });
 
-        // redirect to login
-        setTimeout(() => {
-          navigate("/login");
-        }, 1000);
-      } catch (error) {
-        console.log(error);
-      }
+      toast.success("signup successful");
+
+      // redirect to login
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     } catch (error) {
       handleError(error);
     }
@@ -136,18 +122,15 @@ const Register = () => {
     switch (error.code) {
       case "auth/email-already-in-use":
         message = `Email is already in use.`;
-        console.log(message);
         break;
       case "auth/invalid-email":
         message = `Invalid email address`;
-        console.log(`Invalid email address`);
         break;
       case "auth/operation-not-allowed":
         message = `Error during sign up`;
-        console.log(`Error during sign up`);
         break;
       default:
-        console.log(error.message);
+        message = "An Error Occured";
         break;
     }
 
@@ -163,7 +146,7 @@ const Register = () => {
             <Typography>Please enter your credentials to signup.</Typography>
           </div>
         </Wrapper>
-        <Form className="login-form" onSubmit={handleSubmit(onSubmit)}>
+        <Form className="signup-form" onSubmit={handleSubmit(signupUser)}>
           <Input
             type="text"
             placeholder="Username"
@@ -192,7 +175,9 @@ const Register = () => {
             className={errors.password && "errorborder"}
             {...register("password", { required: true, minLength: 8 })}
           />
-          <Button type="submit">Signup</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            Signup
+          </Button>
           <Typography
             className="message"
             style={{ margin: "15px 0 0", color: "#b3b3b3", fontSize: "12px" }}

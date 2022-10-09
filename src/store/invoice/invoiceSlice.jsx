@@ -16,7 +16,6 @@ export const invoiceSlice = createSlice({
       state.menuIsOpen = !state.menuIsOpen;
     },
     SET_EDIT(state, { payload }) {
-      console.log(payload);
       state.edit = { ...payload };
     },
     SET_FILTER(state, { payload }) {
