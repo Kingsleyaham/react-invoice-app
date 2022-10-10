@@ -4,11 +4,13 @@ import {
   SET_EDIT,
   MARK_PAID,
   DELETE_INVOICE,
+  saveInvoiceToLocalStorage,
 } from "../store/invoice/invoiceSlice";
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import PrevButton from "../components/PrevButton";
+import NotFound from "./NotFound";
 
 const Wrapper = styled.main`
   width: 100%;
@@ -157,9 +159,19 @@ const InvoiceDetails = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const toggleEditInvoiceForm = () => {
+    dispatch(SET_MENU_OPEN());
+    dispatch(SET_EDIT({ ...edit, status: true, id: invoice.id }));
+  };
   const deleteInvoice = () => {
     dispatch(DELETE_INVOICE(invoiceIndex));
+    dispatch(saveInvoiceToLocalStorage());
     navigate("/");
+  };
+
+  const markInvoicePaid = () => {
+    dispatch(MARK_PAID(invoiceIndex));
+    dispatch(saveInvoiceToLocalStorage());
   };
 
   const capitalize = (str) => {
@@ -174,9 +186,8 @@ const InvoiceDetails = (props) => {
 
   return (
     <Wrapper className="invoice-details">
-      {invoice && (
+      {invoice ? (
         <>
-          {" "}
           <PrevButton text="Go Back" />
           <StatusCard>
             <StatusTitle>Status</StatusTitle>
@@ -203,22 +214,11 @@ const InvoiceDetails = (props) => {
             <ButtonWrapper>
               {(invoice?.status.toLowerCase() === "draft" ||
                 invoice?.status.toLowerCase() === "pending") && (
-                <EditButton
-                  onClick={() => {
-                    dispatch(SET_MENU_OPEN());
-                    dispatch(
-                      SET_EDIT({ ...edit, status: true, id: invoice.id })
-                    );
-                  }}
-                >
-                  Edit
-                </EditButton>
+                <EditButton onClick={toggleEditInvoiceForm}>Edit</EditButton>
               )}
               <DeleteButton onClick={deleteInvoice}>Delete</DeleteButton>
               {invoice?.status.toLowerCase() === "pending" && (
-                <MarkButton onClick={() => dispatch(MARK_PAID(invoiceIndex))}>
-                  Mark as Paid
-                </MarkButton>
+                <MarkButton onClick={markInvoicePaid}>Mark as Paid</MarkButton>
               )}
             </ButtonWrapper>
           </StatusCard>
@@ -362,6 +362,8 @@ const InvoiceDetails = (props) => {
             </GridItem>
           </Grid>
         </>
+      ) : (
+        <NotFound />
       )}
     </Wrapper>
   );

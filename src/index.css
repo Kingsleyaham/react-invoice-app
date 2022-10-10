@@ -50,9 +50,3 @@ input[type="number"]::-webkit-outer-spin-button {
 .errorborder {
   border: 1px solid #f84a4a !important;
 }
-
-.form .message a {
-  color: #4caf50;
-  /* color: #0b1561; */
-  text-decoration: none;
-}

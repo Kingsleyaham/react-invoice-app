@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import profile from "../assets/profile.jpg";
+import profileImg from "../assets/profile.jpg";
 import styled from "styled-components";
 
 const Container = styled.header`
@@ -87,7 +87,7 @@ const Avatar = styled.img`
 `;
 
 Avatar.defaultProps = {
-  src: profile,
+  src: profileImg,
   alt: "profile pic",
 };
 

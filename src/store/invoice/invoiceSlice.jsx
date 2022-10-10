@@ -1,10 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import dummyData from "./dummy";
 
 const initialState = {
   menuIsOpen: false,
   edit: { status: false, id: null },
-  invoices: [...dummyData],
+  invoices: [],
   filter: [],
 };
 
@@ -20,6 +19,9 @@ export const invoiceSlice = createSlice({
     },
     SET_FILTER(state, { payload }) {
       state.filter = payload;
+    },
+    SET_INVOICE(state, { payload }) {
+      state.invoices = payload;
     },
     NEW_INVOICE(state, { payload }) {
       state.invoices.push(payload);
@@ -45,6 +47,19 @@ export const {
   UPDATE_INVOICE,
   MARK_PAID,
   DELETE_INVOICE,
+  SET_INVOICE,
 } = invoiceSlice.actions;
+
+export const fetchInvoicesFromLocalStorage = () => (dispatch, getState) => {
+  const invoices = localStorage.getItem("invoices");
+
+  dispatch(SET_INVOICE(invoices ? JSON.parse(invoices) : []));
+};
+
+export const saveInvoiceToLocalStorage = () => (dispatch, getState) => {
+  const invoices = getState().invoice.invoices;
+
+  localStorage.setItem("invoices", JSON.stringify(invoices));
+};
 
 export default invoiceSlice.reducer;

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Suspense } from "react";
 import DeleteIcon from "./DeleteIcon";
 import { useSelector, useDispatch } from "react-redux";
 // import { Formik } from "formik";
@@ -6,6 +7,7 @@ import {
   SET_MENU_OPEN,
   NEW_INVOICE,
   UPDATE_INVOICE,
+  saveInvoiceToLocalStorage,
 } from "../store/invoice/invoiceSlice";
 import { useEffect, useState, useRef } from "react";
 import countries from "./../data/countries";
@@ -346,6 +348,7 @@ const InvoiceForm = () => {
       dispatch(UPDATE_INVOICE({ index: invoiceIndex, newInvoice: formData }));
     }
 
+    dispatch(saveInvoiceToLocalStorage());
     dispatch(SET_MENU_OPEN());
     resetForm();
   };
@@ -423,412 +426,420 @@ const InvoiceForm = () => {
   };
 
   return (
-    <Container
-      style={{
-        transform: menuIsOpen ? "translateX(0px)" : "translateX(-750px)",
-      }}
-    >
-      <Title>New Invoice</Title>
+    <Suspense fallback={<div>You are yet to create an invoice</div>}>
+      <Container
+        style={{
+          transform: menuIsOpen ? "translateX(0px)" : "translateX(-750px)",
+        }}
+      >
+        <Title>New Invoice</Title>
 
-      <Form>
-        <Title
-          as="h3"
-          fontSize=".85rem"
-          marginBottom="0.2rem"
-          style={{ color: "rgb(123, 92, 250)" }}
-        >
-          Bill From
-        </Title>
-        <InputWrapper>
-          <Label htmlFor="street" className={errors.adress && "error"}>
-            Street Address
-          </Label>
-          <InputText
-            name="adress"
-            className={errors.adress && "errorborder"}
-            onChange={handleChange}
-            value={invoiceForm.adress}
-          ></InputText>
-        </InputWrapper>
-
-        <InputGroup>
-          <InputWrapper>
-            <Label htmlFor="city" className={errors.city && "error"}>
-              City
-            </Label>
-            <InputText
-              name="city"
-              className={errors.city && "errorborder"}
-              onChange={handleChange}
-              value={invoiceForm.city}
-            ></InputText>
-          </InputWrapper>
-          <InputWrapper>
-            <Label htmlFor="postcode" className={errors.postCode && "error"}>
-              Post Code
-            </Label>
-            <InputText
-              name="postCode"
-              className={errors.postCode && "errorborder"}
-              onChange={handleChange}
-              value={invoiceForm.postCode}
-            ></InputText>
-          </InputWrapper>
-          <InputWrapper>
-            <Label htmlFor="country" className={errors.country && "error"}>
-              Country
-            </Label>
-            <InputText
-              as="select"
-              name="country"
-              className={errors.country && "errorborder"}
-              onChange={handleChange}
-              value={invoiceForm.country.toLowerCase()}
-            >
-              <option value="">Select Country</option>
-              {countries.map((country, index) => (
-                <option value={country.toLowerCase()} key={index}>
-                  {country}
-                </option>
-              ))}
-            </InputText>
-          </InputWrapper>
-        </InputGroup>
-
-        <Title
-          as="h3"
-          fontSize=".85rem"
-          marginBottom="0.2rem"
-          style={{ color: "rgb(123, 92, 250)" }}
-        >
-          Bill To
-        </Title>
-        <InputWrapper>
-          <Label htmlFor="clientName" className={errors.clientName && "error"}>
-            Client's Name
-          </Label>
-          <InputText
-            name="clientName"
-            className={errors.clientName && "errorborder"}
-            onChange={handleChange}
-            value={invoiceForm.clientName}
-          ></InputText>
-        </InputWrapper>
-        <InputWrapper>
-          <Label
-            htmlFor="clientEmail"
-            className={errors.clientEmail && "error"}
+        <Form>
+          <Title
+            as="h3"
+            fontSize=".85rem"
+            marginBottom="0.2rem"
+            style={{ color: "rgb(123, 92, 250)" }}
           >
-            Client's Email
-          </Label>
-          <InputText
-            name="clientEmail"
-            className={errors.clientEmail && "errorborder"}
-            onChange={handleChange}
-            value={invoiceForm.clientEmail}
-            // onBlur={validateEmail}
-          ></InputText>
-        </InputWrapper>
-        <InputWrapper>
-          <Label
-            htmlFor="clientAddress"
-            className={errors.clientAdress && "error"}
-          >
-            Client's Address
-          </Label>
-          <InputText
-            name="clientAdress"
-            className={errors.clientAdress && "errorborder"}
-            onChange={handleChange}
-            value={invoiceForm.clientAdress}
-          ></InputText>
-        </InputWrapper>
-
-        <InputGroup>
+            Bill From
+          </Title>
           <InputWrapper>
-            <Label
-              htmlFor="clientCity"
-              className={errors.clientCity && "error"}
-            >
-              City
+            <Label htmlFor="street" className={errors.adress && "error"}>
+              Street Address
             </Label>
             <InputText
-              name="clientCity"
-              className={errors.clientCity && "errorborder"}
+              name="adress"
+              className={errors.adress && "errorborder"}
               onChange={handleChange}
-              value={invoiceForm.clientCity}
+              value={invoiceForm.adress}
             ></InputText>
           </InputWrapper>
-          <InputWrapper>
-            <Label
-              htmlFor="clientPostCode"
-              className={errors.clientPostCode && "error"}
-            >
-              Post Code
-            </Label>
-            <InputText
-              name="clientPostCode"
-              className={errors.clientPostCode && "errorborder"}
-              onChange={handleChange}
-              value={invoiceForm.clientPostCode}
-            ></InputText>
-          </InputWrapper>
-          <InputWrapper>
-            <Label
-              htmlFor="clientCountry"
-              className={errors.clientCountry && "error"}
-            >
-              Country
-            </Label>
-            <InputText
-              as="select"
-              name="clientCountry"
-              className={errors.clientCountry && "errorborder"}
-              onChange={handleChange}
-              value={invoiceForm.clientCountry.toLowerCase()}
-            >
-              <option value="">Select Country</option>
-              {countries.map((country, index) => (
-                <option value={country.toLowerCase()} key={index}>
-                  {country}
-                </option>
-              ))}
-            </InputText>
-          </InputWrapper>
-        </InputGroup>
 
-        <InputGroup width="47%">
-          <InputWrapper>
-            <Label
-              htmlFor="invoiceDate"
-              className={errors.invoiceDate && "error"}
-            >
-              Invoice Date
-            </Label>
-            <InputText
-              type="date"
-              className={errors.invoiceDate && "errorborder"}
-              name="invoiceDate"
-              value={invoiceForm.invoiceDate}
-              onChange={(e) =>
-                setInvoiceForm((prev) => ({
-                  ...prev,
-                  invoiceDate: new Date(e.target.value)
-                    .toISOString()
-                    .substring(0, 10),
-                }))
-              }
-            ></InputText>
-          </InputWrapper>
-          <InputWrapper>
-            <Label
-              htmlFor="paymentTerm"
-              className={errors.paymentTerm && "error"}
-            >
-              Payment Term
-            </Label>
-            <Select
-              as="select"
-              className={errors.paymentTerm && "errorborder"}
-              name="paymentTerm"
-              value={invoiceForm.paymentTerm}
-              onChange={(e) =>
-                setInvoiceForm((prev) => ({
-                  ...prev,
-                  paymentTerm: e.target.value,
-                }))
-              }
-            >
-              <option value="1">Next 1 Day</option>
-              <option value="7">Next 7 Days</option>
-              <option value="14">Next 14 Days</option>
-              <option value="30">Next 30 Days</option>
-            </Select>
-          </InputWrapper>
-        </InputGroup>
-
-        <InputWrapper>
-          <Label
-            htmlFor="projectDesc"
-            className={errors.projectDesc && "error"}
-          >
-            Project Description
-          </Label>
-          <InputText
-            name="projectDesc"
-            className={errors.projectDesc && "errorborder"}
-            onChange={handleChange}
-            value={invoiceForm.projectDesc}
-          ></InputText>
-        </InputWrapper>
-
-        <Box>
-          <Title>Item List</Title>
-          <AddedProject className="added-projects">
-            {invoiceForm.projects.length > 0 && (
-              <Box>
-                <Box
-                  style={{ display: "flex", gap: "15px" }}
-                  className="project-labels"
-                >
-                  <CustomLabel id="label-name" flexBasis="40%">
-                    Item Name
-                  </CustomLabel>
-                  <CustomLabel id="label-qty" flexBasis="10%">
-                    Qty.
-                  </CustomLabel>
-                  <CustomLabel id="label-price">Price</CustomLabel>
-                  <CustomLabel id="label-total">Total</CustomLabel>
-                </Box>
-                {invoiceForm.projects.map((project, index) => (
-                  <Box
-                    style={{
-                      display: "flex",
-                      gap: "15px",
-                      marginBottom: "10px",
-                    }}
-                    className="added-projects-info"
-                    key={index}
-                  >
-                    <CustomBox flexBasis="40%" className="added-project-name">
-                      {project.name}
-                    </CustomBox>
-                    <CustomBox flexBasis="10%" className="added-project-qty">
-                      {project.quantity}
-                    </CustomBox>
-                    <CustomBox className="added-project-price">
-                      {project.price}
-                    </CustomBox>
-                    <CustomBox className="added-project-total">
-                      <span className="price-symbol">&#36;</span>
-                      {project.total}
-                    </CustomBox>
-                    <div className="" onClick={() => deleteProject(index)}>
-                      <DeleteIcon />
-                    </div>
-                  </Box>
-                ))}
-              </Box>
-            )}
-          </AddedProject>
-
-          <InputGroup
-            style={{ gap: "16px" }}
-            className="input-group"
-            id="project"
-          >
-            <InputWrapper
-              style={{ width: "50%" }}
-              className="input-item"
-              id="project-name"
-            >
-              <Label htmlFor="item-name" className={error && "error"}>
-                Item Name
+          <InputGroup>
+            <InputWrapper>
+              <Label htmlFor="city" className={errors.city && "error"}>
+                City
               </Label>
               <InputText
-                name="itemName"
-                placeholder="Enter Product Name..."
-                className={
-                  error
-                    ? !projectNameval.current.value
-                      ? "errorborder"
-                      : ""
-                    : ""
-                }
-                ref={projectNameval}
-                onChange={() => setError(false)}
-              />
+                name="city"
+                className={errors.city && "errorborder"}
+                onChange={handleChange}
+                value={invoiceForm.city}
+              ></InputText>
             </InputWrapper>
-            <InputWrapper
-              style={{ width: "10%" }}
-              className="input-item"
-              id="project-qty"
-            >
-              <Label htmlFor="quantity"> Qty. </Label>
+            <InputWrapper>
+              <Label htmlFor="postcode" className={errors.postCode && "error"}>
+                Post Code
+              </Label>
               <InputText
-                type="number"
-                name="quantity"
-                id="quantity"
-                defaultValue={1}
-                ref={projectQtyVal}
-                onChange={(e) =>
-                  reCalculateTotal(
-                    e.target.value,
-                    projectPriceVal.current.value
-                  )
-                }
-              />
+                name="postCode"
+                className={errors.postCode && "errorborder"}
+                onChange={handleChange}
+                value={invoiceForm.postCode}
+              ></InputText>
             </InputWrapper>
-            <InputWrapper
-              style={{ width: "20%" }}
-              className="input-item"
-              id="project-price"
-            >
-              <Label htmlFor="price">Price</Label>
+            <InputWrapper>
+              <Label htmlFor="country" className={errors.country && "error"}>
+                Country
+              </Label>
               <InputText
-                type="number"
-                name="price"
-                id="price"
-                className={
-                  error
-                    ? projectPriceVal.current.value <= 0
-                      ? "errorborder"
-                      : ""
-                    : ""
-                }
-                defaultValue={0}
-                ref={projectPriceVal}
-                onChange={(e) => {
-                  setError(false);
-                  reCalculateTotal(e.target.value, projectQtyVal.current.value);
-                }}
-              />
-            </InputWrapper>
-            <InputWrapper
-              style={{ width: "20%" }}
-              className="input-item"
-              id="project-total"
-            >
-              <Label htmlFor="total"> Total </Label>
-              <TotalBox id="total">
-                <span className="price-symbol">&#36;</span>
-                {parseFloat(projectTotalPrice).toFixed(2)}
-              </TotalBox>
+                as="select"
+                name="country"
+                className={errors.country && "errorborder"}
+                onChange={handleChange}
+                value={invoiceForm.country.toLowerCase()}
+              >
+                <option value="">Select Country</option>
+                {countries.map((country, index) => (
+                  <option value={country.toLowerCase()} key={index}>
+                    {country}
+                  </option>
+                ))}
+              </InputText>
             </InputWrapper>
           </InputGroup>
 
-          <AddButton onClick={addNewProject}>Add New Item</AddButton>
-        </Box>
-      </Form>
-
-      <ButtonWrapper>
-        <Button bgColor="#252946" onClick={() => dispatch(SET_MENU_OPEN())}>
-          Discard
-        </Button>
-        <div>
-          {editMode.status ? (
-            <Button
-              type="submit"
-              bgColor="#7b5cfa"
-              onClick={() => saveInvoice("update")}
+          <Title
+            as="h3"
+            fontSize=".85rem"
+            marginBottom="0.2rem"
+            style={{ color: "rgb(123, 92, 250)" }}
+          >
+            Bill To
+          </Title>
+          <InputWrapper>
+            <Label
+              htmlFor="clientName"
+              className={errors.clientName && "error"}
             >
-              Save Changes
-            </Button>
-          ) : (
-            <>
-              <Button bgColor="#373b53" onClick={() => saveInvoice("draft")}>
-                Save as Draft
+              Client's Name
+            </Label>
+            <InputText
+              name="clientName"
+              className={errors.clientName && "errorborder"}
+              onChange={handleChange}
+              value={invoiceForm.clientName}
+            ></InputText>
+          </InputWrapper>
+          <InputWrapper>
+            <Label
+              htmlFor="clientEmail"
+              className={errors.clientEmail && "error"}
+            >
+              Client's Email
+            </Label>
+            <InputText
+              name="clientEmail"
+              className={errors.clientEmail && "errorborder"}
+              onChange={handleChange}
+              value={invoiceForm.clientEmail}
+              // onBlur={validateEmail}
+            ></InputText>
+          </InputWrapper>
+          <InputWrapper>
+            <Label
+              htmlFor="clientAddress"
+              className={errors.clientAdress && "error"}
+            >
+              Client's Address
+            </Label>
+            <InputText
+              name="clientAdress"
+              className={errors.clientAdress && "errorborder"}
+              onChange={handleChange}
+              value={invoiceForm.clientAdress}
+            ></InputText>
+          </InputWrapper>
+
+          <InputGroup>
+            <InputWrapper>
+              <Label
+                htmlFor="clientCity"
+                className={errors.clientCity && "error"}
+              >
+                City
+              </Label>
+              <InputText
+                name="clientCity"
+                className={errors.clientCity && "errorborder"}
+                onChange={handleChange}
+                value={invoiceForm.clientCity}
+              ></InputText>
+            </InputWrapper>
+            <InputWrapper>
+              <Label
+                htmlFor="clientPostCode"
+                className={errors.clientPostCode && "error"}
+              >
+                Post Code
+              </Label>
+              <InputText
+                name="clientPostCode"
+                className={errors.clientPostCode && "errorborder"}
+                onChange={handleChange}
+                value={invoiceForm.clientPostCode}
+              ></InputText>
+            </InputWrapper>
+            <InputWrapper>
+              <Label
+                htmlFor="clientCountry"
+                className={errors.clientCountry && "error"}
+              >
+                Country
+              </Label>
+              <InputText
+                as="select"
+                name="clientCountry"
+                className={errors.clientCountry && "errorborder"}
+                onChange={handleChange}
+                value={invoiceForm.clientCountry.toLowerCase()}
+              >
+                <option value="">Select Country</option>
+                {countries.map((country, index) => (
+                  <option value={country.toLowerCase()} key={index}>
+                    {country}
+                  </option>
+                ))}
+              </InputText>
+            </InputWrapper>
+          </InputGroup>
+
+          <InputGroup width="47%">
+            <InputWrapper>
+              <Label
+                htmlFor="invoiceDate"
+                className={errors.invoiceDate && "error"}
+              >
+                Invoice Date
+              </Label>
+              <InputText
+                type="date"
+                className={errors.invoiceDate && "errorborder"}
+                name="invoiceDate"
+                value={invoiceForm.invoiceDate}
+                onChange={(e) =>
+                  setInvoiceForm((prev) => ({
+                    ...prev,
+                    invoiceDate: new Date(e.target.value)
+                      .toISOString()
+                      .substring(0, 10),
+                  }))
+                }
+              ></InputText>
+            </InputWrapper>
+            <InputWrapper>
+              <Label
+                htmlFor="paymentTerm"
+                className={errors.paymentTerm && "error"}
+              >
+                Payment Term
+              </Label>
+              <Select
+                as="select"
+                className={errors.paymentTerm && "errorborder"}
+                name="paymentTerm"
+                value={invoiceForm.paymentTerm}
+                onChange={(e) =>
+                  setInvoiceForm((prev) => ({
+                    ...prev,
+                    paymentTerm: e.target.value,
+                  }))
+                }
+              >
+                <option value="1">Next 1 Day</option>
+                <option value="7">Next 7 Days</option>
+                <option value="14">Next 14 Days</option>
+                <option value="30">Next 30 Days</option>
+              </Select>
+            </InputWrapper>
+          </InputGroup>
+
+          <InputWrapper>
+            <Label
+              htmlFor="projectDesc"
+              className={errors.projectDesc && "error"}
+            >
+              Project Description
+            </Label>
+            <InputText
+              name="projectDesc"
+              className={errors.projectDesc && "errorborder"}
+              onChange={handleChange}
+              value={invoiceForm.projectDesc}
+            ></InputText>
+          </InputWrapper>
+
+          <Box>
+            <Title>Item List</Title>
+            <AddedProject className="added-projects">
+              {invoiceForm.projects.length > 0 && (
+                <Box>
+                  <Box
+                    style={{ display: "flex", gap: "15px" }}
+                    className="project-labels"
+                  >
+                    <CustomLabel id="label-name" flexBasis="40%">
+                      Item Name
+                    </CustomLabel>
+                    <CustomLabel id="label-qty" flexBasis="10%">
+                      Qty.
+                    </CustomLabel>
+                    <CustomLabel id="label-price">Price</CustomLabel>
+                    <CustomLabel id="label-total">Total</CustomLabel>
+                  </Box>
+                  {invoiceForm.projects.map((project, index) => (
+                    <Box
+                      style={{
+                        display: "flex",
+                        gap: "15px",
+                        marginBottom: "10px",
+                      }}
+                      className="added-projects-info"
+                      key={index}
+                    >
+                      <CustomBox flexBasis="40%" className="added-project-name">
+                        {project.name}
+                      </CustomBox>
+                      <CustomBox flexBasis="10%" className="added-project-qty">
+                        {project.quantity}
+                      </CustomBox>
+                      <CustomBox className="added-project-price">
+                        {project.price}
+                      </CustomBox>
+                      <CustomBox className="added-project-total">
+                        <span className="price-symbol">&#36;</span>
+                        {project.total}
+                      </CustomBox>
+                      <div className="" onClick={() => deleteProject(index)}>
+                        <DeleteIcon />
+                      </div>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </AddedProject>
+
+            <InputGroup
+              style={{ gap: "16px" }}
+              className="input-group"
+              id="project"
+            >
+              <InputWrapper
+                style={{ width: "50%" }}
+                className="input-item"
+                id="project-name"
+              >
+                <Label htmlFor="item-name" className={error && "error"}>
+                  Item Name
+                </Label>
+                <InputText
+                  name="itemName"
+                  placeholder="Enter Product Name..."
+                  className={
+                    error
+                      ? !projectNameval.current.value
+                        ? "errorborder"
+                        : ""
+                      : ""
+                  }
+                  ref={projectNameval}
+                  onChange={() => setError(false)}
+                />
+              </InputWrapper>
+              <InputWrapper
+                style={{ width: "10%" }}
+                className="input-item"
+                id="project-qty"
+              >
+                <Label htmlFor="quantity"> Qty. </Label>
+                <InputText
+                  type="number"
+                  name="quantity"
+                  id="quantity"
+                  defaultValue={1}
+                  ref={projectQtyVal}
+                  onChange={(e) =>
+                    reCalculateTotal(
+                      e.target.value,
+                      projectPriceVal.current.value
+                    )
+                  }
+                />
+              </InputWrapper>
+              <InputWrapper
+                style={{ width: "20%" }}
+                className="input-item"
+                id="project-price"
+              >
+                <Label htmlFor="price">Price</Label>
+                <InputText
+                  type="number"
+                  name="price"
+                  id="price"
+                  className={
+                    error
+                      ? projectPriceVal.current.value <= 0
+                        ? "errorborder"
+                        : ""
+                      : ""
+                  }
+                  defaultValue={0}
+                  ref={projectPriceVal}
+                  onChange={(e) => {
+                    setError(false);
+                    reCalculateTotal(
+                      e.target.value,
+                      projectQtyVal.current.value
+                    );
+                  }}
+                />
+              </InputWrapper>
+              <InputWrapper
+                style={{ width: "20%" }}
+                className="input-item"
+                id="project-total"
+              >
+                <Label htmlFor="total"> Total </Label>
+                <TotalBox id="total">
+                  <span className="price-symbol">&#36;</span>
+                  {parseFloat(projectTotalPrice).toFixed(2)}
+                </TotalBox>
+              </InputWrapper>
+            </InputGroup>
+
+            <AddButton onClick={addNewProject}>Add New Item</AddButton>
+          </Box>
+        </Form>
+
+        <ButtonWrapper>
+          <Button bgColor="#252946" onClick={() => dispatch(SET_MENU_OPEN())}>
+            Discard
+          </Button>
+          <div>
+            {editMode.status ? (
+              <Button
+                type="submit"
+                bgColor="#7b5cfa"
+                onClick={() => saveInvoice("update")}
+              >
+                Save Changes
               </Button>
-              &nbsp;&nbsp;
-              <Button bgColor="#7b5cfa" onClick={() => saveInvoice("new")}>
-                Save &amp; Send
-              </Button>
-              &nbsp;&nbsp;
-            </>
-          )}
-        </div>
-      </ButtonWrapper>
-    </Container>
+            ) : (
+              <>
+                <Button bgColor="#373b53" onClick={() => saveInvoice("draft")}>
+                  Save as Draft
+                </Button>
+                &nbsp;&nbsp;
+                <Button bgColor="#7b5cfa" onClick={() => saveInvoice("new")}>
+                  Save &amp; Send
+                </Button>
+                &nbsp;&nbsp;
+              </>
+            )}
+          </div>
+        </ButtonWrapper>
+      </Container>
+    </Suspense>
   );
 };
 
