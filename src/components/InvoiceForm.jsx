@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { Suspense } from "react";
 import DeleteIcon from "./DeleteIcon";
 import { useSelector, useDispatch } from "react-redux";
-// import { Formik } from "formik";
 import {
   SET_MENU_OPEN,
   NEW_INVOICE,
@@ -452,6 +451,7 @@ const InvoiceForm = () => {
               className={errors.adress && "errorborder"}
               onChange={handleChange}
               value={invoiceForm.adress}
+              id="street"
             ></InputText>
           </InputWrapper>
 
