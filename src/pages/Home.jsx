@@ -25,7 +25,7 @@ const Home = (props) => {
   const [filteredInvoice, setFilteredInvoice] = useState([]);
 
   useEffect(() => {
-    document.title = "React Firebase Invoice App";
+    document.title = "React Invoice App";
   }, []);
 
   useEffect(() => {
