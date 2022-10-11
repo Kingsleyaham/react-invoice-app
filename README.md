@@ -1,70 +1,71 @@
-# Getting Started with Create React App
+# Reactjs Invoice App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the solution for [Frontend Mentor Invoice App](https://www.frontendmentor.io/challenges/invoice-app-i7KaLTQjl). You can keep track of your personal invoices with this app. You can create a new invoice, save it as a draft or as pending, mark pending invoices as paid and edit any draft or pending invoices. Also you can filter the invoices by their draft/pending/paid status.
 
-## Available Scripts
+You can see the [live demo here.](https://fozoglu-vue-invoice-app.surge.sh/)
 
-In the project directory, you can run:
+I used localstorage to ensure the invoice created persists after refreshing browser.
 
-### `npm start`
+### Screenshots:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+![Desktop Screenshot](./public/screenshots/desktop.png)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## This project is built with:
 
-### `npm test`
+- Frontend Framework: [ReactJs](https://reactjs.org/),
+- For state management: [Redux Toolkit](https://redux-toolkit.js.org/),
+- For routing: [React Router](https://reactrouter.com/),
+- For Storage: [localstorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage/),
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Table of contents
 
-### `npm run build`
+- [Overview](#overview)
+  - [The challenge](#the-challenge)
+  - [Links](#links)
+- [My process](#my-process)
+  - [Built with](#built-with)
+- [Author](#author)
+- [Project Setup](#project-setup)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Overview
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### The challenge
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Users should be able to:
 
-### `npm run eject`
+- View the optimal layout for the app depending on their device's screen size
+- See hover states for all interactive elements on the page
+- Create, read, update, and delete invoices
+- Receive form validations when trying to create/edit an invoice
+- Save draft invoices, and mark pending invoices as paid
+- Filter invoices by status (draft/pending/paid)
+- Bonus: Used Localstorage to make invoice persist after refresh or when browser is closed.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Links
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Solution URL: [Github Link](https://github.com/Kingsleyaham/react-invoice-app)
+- Live Site URL: [React Invoice App](https://fozoglu-vue-invoice-app.surge.sh/)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Author
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Portfolio - [Kingsleyaham](https://github.com/Kingsleyaham/)
+- Linkedin - [Kingsley Aham](https://www.linkedin.com/in/kingsley-aham-282a51225/)
+- Twitter - [Aham Kingsley](https://twitter.com/aham_kingsley8/)
 
-## Learn More
+## Project setup
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+npm install
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Compiles and hot-reloads for development
 
-### Code Splitting
+```
+npm run start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Compiles and minifies for production
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```
+npm run build
+```
