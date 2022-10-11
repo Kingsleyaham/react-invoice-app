@@ -44,7 +44,7 @@ Users should be able to:
 ### Links
 
 - Solution URL: [Github Link](https://github.com/Kingsleyaham/react-invoice-app)
-- Live Site URL: [React Invoice App](https://fozoglu-vue-invoice-app.surge.sh/)
+- Live Site URL: [React Invoice App](https://react-invoice-app-proj.netlify.app/)
 
 ## Author
 
