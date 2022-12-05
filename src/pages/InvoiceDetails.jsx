@@ -155,7 +155,7 @@ const InvoiceDetails = (props) => {
   const invoiceIndex = invoices.findIndex((elem) => elem.id === params.id);
 
   useEffect(() => {
-    document.title = `React Firebase Invoice App - ${invoice?.id}`;
+    document.title = `React Invoice App - ${invoice?.id}`;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
